@@ -200,7 +200,7 @@ console.log(`Total number of salvage removed : ${salavgeCount}`)
 const keys1 = Object.keys(years)
 for ( const year of keys1){
   if (years[year] !== 0){
-    console.log(` ${year} : ${years[year]}`)
+    console.log(`\t ${year} : ${years[year]}`)
   }
   const makeYear = {
     'year': year,
