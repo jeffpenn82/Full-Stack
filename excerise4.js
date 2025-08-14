@@ -6,19 +6,25 @@
 // artificialIntelligence: Null
 
 
-const obj = {
+const vehicle = {
     make: 'Ford',
     model: 'F150',
     year: 2015,
     salvaged: false,
-    owners: [Jeff, Bill, Frank],
-    artificialIntelligence: Null
+    owners: ['jeff', 'Bill', 'Frank'],
+    artificialIntelligence: null
 }
 
-const keys = Object.keys(obj)
 
-for (const key  of keys){
-    console.log(keys[key])
-}
 
-console.log('hello')
+Object.keys(vehicle).forEach((key) => {
+    if (Array.isArray(vehicle[key])){
+        console.log(`The array named ${key} has the following values : `);
+        vehicle[key].forEach((property) => {
+            console.log(`\t${property}`);
+        })
+    }else{
+        console.log(`The key ${key} and the value is ${vehicle[key]}`);
+    }
+})
+

@@ -96,110 +96,64 @@ const salvageVINs = [
 
 
 
+// dynamic arrays for each make, to lowercase, animal lecture
+const makes = [...new Set(vehicles.map(v => v.make))];
+const makeArrays = {};
+makes.forEach(make => {
+    makeArrays[make.toLowerCase() + 'Vehicles'] = vehicles.filter(v => v.make === make);
+});
 
+Object.keys(makeArrays).forEach(key => {
+    makeArrays[key].sort((a, b) => a.year - b.year);
+});
 
-// Lab requirements (applied in any order you choose): 
-// 1.  Create new arrays for each "Make" of vehicle.  
-//     a.  Each new array should only contain vehicles of the same make and the array variable should be named appropriately (EG: teslaVehicles)
-// 2.  Order each new Make array by vehicle year in ascending order
-// 3.  Add recall reason from the recallList to each vehicle (based on VIN) as "recallReason"
-// 4.  Remove any vehicles that have a salvage title (based on VIN)
-// 5.  Output each Make array to the console, ordered by year (from step 2), with recall details included (from step 3), and all salvaged vehicles removed (from step 4)
-// 6.  Step 5 should be in an easy to read format - use new lines and tabs for formatting
-// 7.  Output the following stats : 
-//    a.  Total number of vehicles you started with
-//    b.  Total number of non-salvage vehicles of each Make
-//    c.  Total number of vehicles that were removed due to salvage
-//    d.  Total number of non-salvage vehicles of each year model, regardless of Make.
-//
-// Restriction : Do not hardcode your array names like "const teslaVehicles" - assume the vehicle list contains an unknown number of makes and generate the variable names dynamically
+// Add recall reason, return?, find
+Object.keys(makeArrays).forEach(key => {
+    makeArrays[key] = makeArrays[key].map(vehicle => {
+        const recall = recallList.find(r => r.vin === vehicle.vin);
+        return { ...vehicle, recallReason: recall ? recall.reason : 'None' };
+    });
+});
 
+// Remove salvage vehicles, filter
+Object.keys(makeArrays).forEach(key => {
+    makeArrays[key] = makeArrays[key].filter(vehicle => !salvageVINs.includes(vehicle.vin));
+});
 
+// Output formatted arrays, year, model, reason, border
+Object.keys(makeArrays).forEach(key => {
+    console.log(`\n${key.replace('Vehicles', '')} Vehicles:`);
+    makeArrays[key].forEach(vehicle => {
+        console.log(`\tYear: ${vehicle.year}`);
+        console.log(`\tModel: ${vehicle.model}`);
+        console.log(`\tVIN: ${vehicle.vin}`);
+        console.log(`\tRecall Reason: ${vehicle.recallReason}`);
+        console.log('\t----------------');
+    });
+});
 
+// Output stats
+const totalVehicles = vehicles.length;
+const salvageCount = vehicles.filter(v => salvageVINs.includes(v.vin)).length;
+const yearCounts = {};
 
-// TODO : START YOUR CODE HERE
-//can do the recall up towards the top
-const vehicleType = {};
-const years = {};
+makeArrays[Object.keys(makeArrays)[0]].forEach(v => {
+    yearCounts[v.year] = (yearCounts[v.year] || 0) + 1;
+});
+Object.keys(makeArrays).slice(1).forEach(key => {
+    makeArrays[key].forEach(v => {
+        yearCounts[v.year] = (yearCounts[v.year] || 0) + 1;
+    });
+});
 
-for (const vehicle of vehicles) {
-    if (!vehicleType[vehicle.make]) {
-        vehicleType[vehicle.make] = [];
-    }
-    const {make, ...rest} = vehicle
-    vehicleType[vehicle.make].push(rest);
-    years[rest.year] = 0
-}
-console.log(vehicleType);
-const makeCounter = [];
-let salavgeCount = {};
-
-// get the keys of vehicle type
-const keys = Object.keys(vehicleType)
-//loop over the keys and create vehicleMake, I will then grab the year and compare which is large and then sort 
-for (const vehicleMake of keys){
-    vehicleType[vehicleMake].sort((a,b) => (
-    a.year > b.year ? 1 : b.year > a.year ?  -1 : 0));
-
-    let counter = 0;
-    let recallAmount = 0;
-    let salavgeAmount = 0;
-    //loop over vehicleType vehicle make 
-    for ( const vehicle of vehicleType[vehicleMake]) {
-      //this is where i am adding the the make count
-      counter++;
-      //looping over recallList to get the vin 
-      for ( const vehicleVin of recallList) {
-        //compare with vehcile vin with vehicleVin if true add the recallReason to vehicle
-        if (vehicleVin['vin'] == vehicle['vin']){
-          vehicle['recallReason'] = vehicleVin['reason']
-          //add up the recall amount
-          recallAmount++
-          break;
-        }
-      }
-      let foundSalvage = false
-      //looping over salvageVins to get the vins
-      for (const salvage of salvageVINs) {
-        //if true delete the vin from vehicle
-         if (salvage == vehicle['vin']){
-          delete vehicle;
-          //adding up salavge amount
-          salavgeAmount++;
-          foundSalvage = true;
-          break ;
-         }
-         salavgeCount = salavgeAmount
-      }
-      //I am using the boolean found salvage to add up the years
-      if (!foundSalvage){
-        years[vehicle['year']]++
-      }
-    }
-    //putting my info in a dic so it is easier to iterate over this will also store the non salvage, recall, and salvage counts for printing
-    const modelCount = {
-      'make': vehicleMake,
-      'counter': counter,
-      'recall': recallAmount,
-      'salvage': salavgeAmount,
-    };
-    makeCounter.push(modelCount);
-}
-
-
-//Answer to 7i
-console.log('Total number of vehicles you started with :', vehicles.length)
-console.log('Total (non-salvage) number of each make :')
-salavgeCount = 0;
-for ( const print of makeCounter) {
-  console.log(`\t ${print.make}, ${print.salvage}`);
-  salavgeCount += print.salvage
-}
-console.log(`Total number of salvage removed : ${salavgeCount}`)
-//grab the keys of years add them up then print them out
-const keys1 = Object.keys(years)
-for ( const year of keys1){
-  if (years[year] !== 0){
-    console.log(`\t ${year} : ${years[year]}`)
-  }
-}
+console.log('\nStatistics:');
+console.log(`\tTotal vehicles started with: ${totalVehicles}`);
+console.log('\tNon-salvage vehicles by make:');
+Object.keys(makeArrays).forEach(key => {
+    console.log(`\t\t${key.replace('Vehicles', '')}: ${makeArrays[key].length}`);
+});
+console.log(`\tTotal salvage vehicles removed: ${salvageCount}`);
+console.log('\tNon-salvage vehicles by year:');
+Object.keys(yearCounts).sort((a, b) => a - b).forEach(year => {
+    console.log(`\t\t${year}: ${yearCounts[year]}`);
+});

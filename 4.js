@@ -94,10 +94,6 @@ const salvageVINs = [
   "3b42d74c-2fed-4a99-9d1c-3921302f8b84",
 ];
 
-
-
-
-
 // Lab requirements (applied in any order you choose): 
 // 1.  Create new arrays for each "Make" of vehicle.  
 //     a.  Each new array should only contain vehicles of the same make and the array variable should be named appropriately (EG: teslaVehicles)
@@ -118,88 +114,97 @@ const salvageVINs = [
 
 
 // TODO : START YOUR CODE HERE
-//can do the recall up towards the top
-const vehicleType = {};
-const years = {};
 
-for (const vehicle of vehicles) {
-    if (!vehicleType[vehicle.make]) {
-        vehicleType[vehicle.make] = [];
-    }
-    const {make, ...rest} = vehicle
-    vehicleType[vehicle.make].push(rest);
-    years[rest.year] = 0
-}
-console.log(vehicleType);
-const makeCounter = [];
-let salavgeCount = {};
 
-// get the keys of vehicle type
-const keys = Object.keys(vehicleType)
-//loop over the keys and create vehicleMake, I will then grab the year and compare which is large and then sort 
-for (const vehicleMake of keys){
-    vehicleType[vehicleMake].sort((a,b) => (
-    a.year > b.year ? 1 : b.year > a.year ?  -1 : 0));
 
-    let counter = 0;
-    let recallAmount = 0;
-    let salavgeAmount = 0;
-    //loop over vehicleType vehicle make 
-    for ( const vehicle of vehicleType[vehicleMake]) {
-      //this is where i am adding the the make count
-      counter++;
-      //looping over recallList to get the vin 
-      for ( const vehicleVin of recallList) {
-        //compare with vehcile vin with vehicleVin if true add the recallReason to vehicle
-        if (vehicleVin['vin'] == vehicle['vin']){
-          vehicle['recallReason'] = vehicleVin['reason']
-          //add up the recall amount
-          recallAmount++
-          break;
-        }
+
+const vehicleSort = {};
+
+const numberOfVehiclesStartedWith = vehicles.length; //a
+
+let totalRemovedToSalvage = 0; //c
+
+const yearModels = {}; //d
+
+
+
+//3 & 4 - Add/Remove based on vin
+vehicles.forEach((vehicle) => {
+  if(salvageVINs.includes(vehicle.vin)){
+    vehicles.splice(vehicles.indexOf(vehicle),1); //remove
+    totalRemovedToSalvage++;
+  } else {
+    recallList.forEach((recall) => {  //there is probably a more efficient way
+      if(recall.vin === vehicle.vin){
+        vehicle.recallReason = recall.reason;
       }
-      let foundSalvage = false
-      //looping over salvageVins to get the vins
-      for (const salvage of salvageVINs) {
-        //if true delete the vin from vehicle
-         if (salvage == vehicle['vin']){
-          delete vehicle;
-          //adding up salavge amount
-          salavgeAmount++;
-          foundSalvage = true;
-          break ;
-         }
-         salavgeCount = salavgeAmount
-      }
-      //I am using the boolean found salvage to add up the years
-      if (!foundSalvage){
-        years[vehicle['year']]++
-      }
-    }
-    //putting my info in a dic so it is easier to iterate over this will also store the non salvage, recall, and salvage counts for printing
-    const modelCount = {
-      'make': vehicleMake,
-      'counter': counter,
-      'recall': recallAmount,
-      'salvage': salavgeAmount,
-    };
-    makeCounter.push(modelCount);
-}
-
-
-//Answer to 7i
-console.log('Total number of vehicles you started with :', vehicles.length)
-console.log('Total (non-salvage) number of each make :')
-salavgeCount = 0;
-for ( const print of makeCounter) {
-  console.log(`\t ${print.make}, ${print.salvage}`);
-  salavgeCount += print.salvage
-}
-console.log(`Total number of salvage removed : ${salavgeCount}`)
-//grab the keys of years add them up then print them out
-const keys1 = Object.keys(years)
-for ( const year of keys1){
-  if (years[year] !== 0){
-    console.log(`\t ${year} : ${years[year]}`)
+    })
   }
+})
+
+
+
+
+//2 - Order by year
+vehicles.sort((a,b) => a.year - b.year);
+
+
+
+//1 & 7d - Sort by make and count year
+vehicles.forEach((car) => {
+  if(vehicleSort[car.make]){
+    vehicleSort[car.make].push(car);
+  } else {
+    vehicleSort[car.make] = [car];
+  }
+
+  if(yearModels[car.year]){
+    yearModels[car.year]++;
+  } else {
+    yearModels[car.year] = 1;
+  }
+});
+
+
+//5 & 6 - Output with formatting
+for(const make in vehicleSort){
+  console.log(`${make} vehicles :`);
+  vehicleSort[make].forEach((car) => {
+    console.log(`\n\t${car.make} ${car.model}, ${car.year}`);
+    console.log(`\tVIN : ${car.vin}`)   //Didn't know if vin was needed or not
+    if(car.recallReason){
+      console.log(`\tRecalled for : ${car.recallReason}`);
+    } else {
+      console.log('\t(Not recalled)');
+    }
+  })
+  console.log(`\n\n`);
+}
+
+
+
+//    a.  Total number of vehicles you started with
+//    b.  Total number of non-salvage vehicles of each Make
+//    c.  Total number of vehicles that were removed due to salvage
+//    d.  Total number of non-salvage vehicles of each year model, regardless of Make.
+
+//7 - Stats
+console.log(`\n\n`);
+
+//a
+console.log(`Number of vehicles started with : ${numberOfVehiclesStartedWith}`);
+
+//b
+console.log(`\nNumber of non-salvaged vehicles of each make :`);
+for(const make in vehicleSort){
+  console.log(`\t${make} vehicles : ${vehicleSort[make].length}`);  //can i right align the numbers?
+}
+
+//c
+console.log(`\nTotal number of vehicles removed due to salvage : ${totalRemovedToSalvage}`);
+
+//d
+console.log(`\nNumber of non-salvaged vehicles of each year model :`);
+for(const year in yearModels){
+  console.log(`\t${year} vehicles : ${yearModels[year]}`);  //This is what was wanted, right?
 }

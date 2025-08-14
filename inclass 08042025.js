@@ -1,12 +1,16 @@
+const obj = {
+  vehicle: {
+    make: "Tesla",
+    model: "S",
+    year: 2020,
+    salvaged: false,
+    authorizedDrivers: [
+      "Person1",
+      "Person2",
+      "Person3"
+    ]
+  }
+};
 
-// let numbers = [];
-
-
-
-// for (let i = 1; i <= 500; i++) {
-//     if ( i % 2 === 0 ) {
-//         numbers.push(i)
-//     }
-//     console.log(i)
-// }
-
+const jsonString = JSON.stringify(obj);
+// const objAgain = JSON.parse(jsonString);

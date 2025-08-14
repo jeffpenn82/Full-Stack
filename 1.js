@@ -94,10 +94,6 @@ const salvageVINs = [
   "3b42d74c-2fed-4a99-9d1c-3921302f8b84",
 ];
 
-
-
-
-
 // Lab requirements (applied in any order you choose): 
 // 1.  Create new arrays for each "Make" of vehicle.  
 //     a.  Each new array should only contain vehicles of the same make and the array variable should be named appropriately (EG: teslaVehicles)
@@ -118,88 +114,89 @@ const salvageVINs = [
 
 
 // TODO : START YOUR CODE HERE
-//can do the recall up towards the top
-const vehicleType = {};
-const years = {};
+//At this point, after Part 1 and Part 2, you should have an array containing all vehicles that :
+//Are NOT a salvage
+//Are ordered chronologically, ascending, by year
+//Include a recallReason if a recall was found
+const unmatchingSalvageVINS = vehicles.filter(obj1 => 
+  !salvageVINs.some(obj2 => obj1.vin === obj2));
 
-for (const vehicle of vehicles) {
-    if (!vehicleType[vehicle.make]) {
-        vehicleType[vehicle.make] = [];
-    }
-    const {make, ...rest} = vehicle
-    vehicleType[vehicle.make].push(rest);
-    years[rest.year] = 0
-}
-console.log(vehicleType);
-const makeCounter = [];
-let salavgeCount = {};
+const combinedUnSalvagedRecallList = unmatchingSalvageVINS.map(obj1 => {
+  const match = recallList.find(obj2 => obj2.vin === obj1.vin);
+  return { ...obj1, reason: match ? match.reason : 'N/A' }; 
+});
 
-// get the keys of vehicle type
-const keys = Object.keys(vehicleType)
-//loop over the keys and create vehicleMake, I will then grab the year and compare which is large and then sort 
-for (const vehicleMake of keys){
-    vehicleType[vehicleMake].sort((a,b) => (
-    a.year > b.year ? 1 : b.year > a.year ?  -1 : 0));
+combinedUnSalvagedRecallList.sort((a, b) => a.year - b.year);
+//console.log(vehicles);
+/*combinedUnSalvagedRecallList.forEach(item => {
+  console.log(`\t${item.make}, ${item.model}, ${item.year}, ${item.reason}`);
+});*/
 
-    let counter = 0;
-    let recallAmount = 0;
-    let salavgeAmount = 0;
-    //loop over vehicleType vehicle make 
-    for ( const vehicle of vehicleType[vehicleMake]) {
-      //this is where i am adding the the make count
-      counter++;
-      //looping over recallList to get the vin 
-      for ( const vehicleVin of recallList) {
-        //compare with vehcile vin with vehicleVin if true add the recallReason to vehicle
-        if (vehicleVin['vin'] == vehicle['vin']){
-          vehicle['recallReason'] = vehicleVin['reason']
-          //add up the recall amount
-          recallAmount++
-          break;
-        }
-      }
-      let foundSalvage = false
-      //looping over salvageVins to get the vins
-      for (const salvage of salvageVINs) {
-        //if true delete the vin from vehicle
-         if (salvage == vehicle['vin']){
-          delete vehicle;
-          //adding up salavge amount
-          salavgeAmount++;
-          foundSalvage = true;
-          break ;
-         }
-         salavgeCount = salavgeAmount
-      }
-      //I am using the boolean found salvage to add up the years
-      if (!foundSalvage){
-        years[vehicle['year']]++
-      }
-    }
-    //putting my info in a dic so it is easier to iterate over this will also store the non salvage, recall, and salvage counts for printing
-    const modelCount = {
-      'make': vehicleMake,
-      'counter': counter,
-      'recall': recallAmount,
-      'salvage': salavgeAmount,
-    };
-    makeCounter.push(modelCount);
-}
+//Group all of the remaining vehicles by "Make" That is, you should be able to create an array that contains all "Honda",
+// a separate array that contains all "Chevrolet", etc
+//RESTRICTION : You are not allowed to hard code the make in your code. 
+//Therefore you can not do something like if (make === 'Ford'). 
+// This also prohibits you from doing something like const hondaList = <findAllHondas>. 
+// This logic should be 100% dynamic such that you can handle any number or variation of make without changing your code.
 
 
-//Answer to 7i
-console.log('Total number of vehicles you started with :', vehicles.length)
-console.log('Total (non-salvage) number of each make :')
-salavgeCount = 0;
-for ( const print of makeCounter) {
-  console.log(`\t ${print.make}, ${print.salvage}`);
-  salavgeCount += print.salvage
-}
-console.log(`Total number of salvage removed : ${salavgeCount}`)
-//grab the keys of years add them up then print them out
-const keys1 = Object.keys(years)
-for ( const year of keys1){
-  if (years[year] !== 0){
-    console.log(`\t ${year} : ${years[year]}`)
-  }
-}
+// Grouping by 'make'
+const groupedByMake = combinedUnSalvagedRecallList.reduce((acc, car) => {
+  acc[car.make] = acc[car.make] || [];
+  acc[car.make].push(car);
+  return acc;
+}, {});
+
+
+
+//Output each Make array to the console, ordered by year (from part 1), 
+//with recall details included (from part 2), and all salvaged vehicles removed (from part 2)
+//  console.log(groupedByMake);
+//
+//Step 5 should be in an easy to read format - use new lines and tabs for formatting. Be sure to include 
+//information that tells the user what they output represents, do not simply output numbers with no descriptions.
+
+// Console output formatting
+console.log('Grouped Non-Salvaged Cars by Make:');
+Object.entries(groupedByMake).forEach(([make, cars]) => {
+  console.log(`\n${make} (model, year, VIN, Recall Reason):`);
+  cars.forEach(car => {
+    console.log(`     ${car.model}, ${car.year}, ${car.vin}, ${car.reason}`);
+  });
+});
+
+console.log (`\n`);
+
+//Output the following stats :
+//Total number of vehicles you started with
+const objectCount = vehicles.filter(item => typeof item === "object" && item !== null).length;
+console.log(`Total number of vehicles processed : ${objectCount}.`);
+console.log (`\n`);
+//Total number of non-salvage vehicles of each Make
+
+const countByMake = unmatchingSalvageVINS.reduce((acc, obj) => {
+  acc[obj.make] = (acc[obj.make] || 0) + 1;
+  return acc;
+}, {});
+
+console.log('Total (non-salvage) number of each make :');
+for (const [make, count] of Object.entries(countByMake)) {
+  console.log(`     ${make}, ${count}`);
+};
+console.log (`\n`);
+//Total number of vehicles that were removed due to salvage
+const removedCount = objectCount - unmatchingSalvageVINS.length
+///console.log (removedCount);
+
+console.log(`Total number of vehicles removed due to salvage: ${removedCount}.`); 
+console.log (`\n`);
+//Total number of non-salvage vehicles of each year model, regardless of Make
+const countByYear = unmatchingSalvageVINS.reduce((acc, obj) => {
+  acc[obj.year] = (acc[obj.year] || 0) + 1;
+  return acc;
+}, {});
+
+console.log('Total (non-salvage) number of each year :');
+for (const [year, count] of Object.entries(countByYear)) {
+  console.log(`     ${year}, ${count}`);
+};

@@ -118,7 +118,7 @@ const salvageVINs = [
 
 
 // TODO : START YOUR CODE HERE
-//can do the recall up towards the top
+
 const vehicleType = {};
 const years = {};
 
@@ -200,6 +200,10 @@ console.log(`Total number of salvage removed : ${salavgeCount}`)
 const keys1 = Object.keys(years)
 for ( const year of keys1){
   if (years[year] !== 0){
-    console.log(`\t ${year} : ${years[year]}`)
+    console.log(` ${year} : ${years[year]}`)
+  }
+  const makeYear = {
+    'year': year,
+    'count': years[year],
   }
 }
