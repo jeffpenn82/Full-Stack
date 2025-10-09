@@ -1,0 +1,3 @@
+{"level":"info","message":"Connected to Mongo @ mongodb://127.0.0.1","service":"arca-TODO"}
+{"level":"info","message":"Selected Mongo database named : arca","service":"arca-TODO"}
+{"level":"info","message":"2025-10-08T12:35:01.672Z : Todo API is listening at http://localhost:3000","service":"arca-TODO"}

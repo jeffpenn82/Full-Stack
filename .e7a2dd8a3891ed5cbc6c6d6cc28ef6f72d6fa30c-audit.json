@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": ".e7a2dd8a3891ed5cbc6c6d6cc28ef6f72d6fa30c-audit.json",
+    "files": [
+        {
+            "date": 1759883011671,
+            "name": "chickens-api-2025-10-07.log",
+            "hash": "ffb5074b77f0356be0d8cf36675cbebbeec97e8297c515c711271738b310fdca"
+        },
+        {
+            "date": 1759926901390,
+            "name": "chickens-api-2025-10-08.log",
+            "hash": "91a2a67a8fecff5b8252842cb85e24215a634434271b38aaa6e45bc4441efbf5"
+        }
+    ],
+    "hashType": "sha256"
+}
