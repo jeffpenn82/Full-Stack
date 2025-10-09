@@ -1,0 +1,8 @@
+{
+  "mongodb": {
+    "protocol": "mongodb+srv://",
+    "url": "mycluster",
+    "username": "user",
+    "password": "pw"
+  }
+}

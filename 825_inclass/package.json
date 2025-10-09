@@ -1,0 +1,18 @@
+{
+  "name": "825_inclass",
+  "version": "1.0.0",
+  "description": "inclass",
+  "main": "825.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uuidv4": "^6.2.13",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "yargs": "^18.0.0"
+  }
+}

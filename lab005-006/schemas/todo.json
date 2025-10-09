@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Todo",
+  "description": "JSON schema for a Todo item",
+  "type": "object",
+  "required": ["title", "completed"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the todo"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short title for the todo"
+    },
+    "description": {
+      "type": ["string", "null"],
+      "maxLength": 2000,
+      "description": "Optional detailed description"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 creation timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 last update timestamp"
+    }
+  },
+  "additionalProperties": false,
+  
+  "examples": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "title": "Buy milk",
+      "description": "Purchase 2 liters of whole milk",
+      "createdAt": "2025-10-01T09:00:00Z",
+      "updatedAt": "2025-10-01T09:00:00Z"
+    }
+  ]
+}

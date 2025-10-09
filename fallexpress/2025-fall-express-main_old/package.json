@@ -1,0 +1,39 @@
+{
+  "name": "2025-express-fall",
+  "version": "1.0.0",
+  "description": "Example Express Project",
+  "main": "server.js",
+  "type": "module",
+  "dependencies": {
+    "config": "^4.1.1",
+    "express": "^5.1.0",
+    "mongodb": "^6.19.0",
+    "uuid": "^11.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carpaltunnel/express-fall-2025.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carpaltunnel/express-fall-2025/issues"
+  },
+  "homepage": "https://github.com/carpaltunnel/express-fall-2025#readme",
+  "devDependencies": {
+    "@eslint/compat": "^1.3.2",
+    "@eslint/js": "^9.35.0",
+    "@stylistic/eslint-plugin": "^3.1.0",
+    "eslint": "^9.35.0",
+    "eslint-config-airbnb-extended": "^2.3.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-n": "^17.21.3",
+    "nodemon": "^3.1.10"
+  }
+}
